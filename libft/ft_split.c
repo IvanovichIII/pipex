@@ -55,6 +55,6 @@ char	**ft_split(const char *s, char c)
 		else
 			++s;
 	}
-	ptr[i] = 0;
+	ptr[i] = NULL;
 	return (ptr);
 }

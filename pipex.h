@@ -13,3 +13,10 @@
 #include "gnl/get_next_line.h"
 #include "printf/ft_printf.h"
 #include "libft/libft.h"
+#include <unistd.h>
+#include <stdio.h>
+#include <fcntl.h>
+#include "sys/wait.h"
+
+
+#define NO_ERROR 0

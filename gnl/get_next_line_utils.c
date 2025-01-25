@@ -12,7 +12,7 @@
 
 #include "get_next_line.h"
 
-char	*ft_strjoin(char const *s1, char const *s2)
+/*char	*ft_strjoin(char const *s1, char const *s2)
 {
 	int		sizetotal;
 	char	*res;
@@ -38,7 +38,7 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	}
 	res[sizetotal] = 0;
 	return (res);
-}
+}*/
 
 char	*ft_strchr(const char *string, int searchedChar )
 {
@@ -81,7 +81,7 @@ void	*ft_calloc(size_t elementCount, size_t elementSize)
 	}
 }
 
-size_t	ft_strlen(const char *theString)
+/*size_t	ft_strlen(const char *theString)
 {
 	int	i;
 
@@ -89,4 +89,4 @@ size_t	ft_strlen(const char *theString)
 	while (theString[i])
 		i++;
 	return (i);
-}
+}*/
