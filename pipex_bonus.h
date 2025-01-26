@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.h                                            :+:      :+:    :+:   */
+/*   pipex_bonus.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -25,13 +25,14 @@
 # endif
 
 //Utils
+char	*find_path(char *cmd, char **envp);
 void	free_split(char **arr);
 void	close_files(int *pipefd, int infile, int outfile);
 
 //Pipex
-char	*find_path(char *cmd, char **envp);
-int	child1(char **argv, char **envp, int pipefd[2], int infile);
-int	child2(char **argv, char **envp, int pipefd[2], int outfile);
+int	child_head(char **argv, char **envp, int pipefd[2], int infile);
+int	child(char *cmd_arg, char **envp, int infile, int outfile);
+int	child_end(char *argv, char **envp, int pipefd[2], int outfile);
 int	main(int argc, char **argv, char **envp);
 
 #endif

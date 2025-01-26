@@ -6,14 +6,16 @@
 
 # Nombre del ejecutable
 NAME = pipex
+NAMEB = pipex_bonus
 
 # Compilador y banderas
 CC = cc
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror -g
 RM = rm -rf
 
 # Archivos fuente y objeto
-SRCS = main.c
+SRCS =	pipex.c \
+		pipex_utils.c
 OBJS = $(SRCS:.c=.o)
 
 # Librerías
@@ -31,7 +33,7 @@ YELLOW = \033[0;33m
 RED = \033[0;31m
 RESET = \033[0m
 
-# Emojis (¡porque sí!)
+# Emojis
 CHECK = ✅
 CROSS = ❌
 BUILD = 🚀
