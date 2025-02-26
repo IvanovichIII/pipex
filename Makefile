@@ -58,15 +58,15 @@ $(NAME): $(OBJS) $(LIBFT) $(GNL) $(PRINTF)
 
 $(LIBFT):
 	@echo "$(BUILD) $(YELLOW)Building Libft...$(RESET)"
-	@make -C $(LIBFT_DIR)
+	@make --no-print-directory -C $(LIBFT_DIR) all > /dev/null
 
 $(GNL):
 	@echo "$(BUILD) $(YELLOW)Building Gnl...$(RESET)"
-	@make -C $(GNL_DIR)
+	@make -C $(GNL_DIR) all > /dev/null
 
 $(PRINTF):
 	@echo "$(BUILD) $(YELLOW)Building Printf...$(RESET)"
-	@make -C $(PRINTF_DIR)
+	@make -C $(PRINTF_DIR) all > /dev/null
 
 # Limpiar archivos intermedios
 clean:

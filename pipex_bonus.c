@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   pipex_bonus.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: igomez-s <igomez-s@student.42.com>         +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/01/27 11:11:43 by igomez-s          #+#    #+#             */
+/*   Updated: 2025/01/27 11:12:26 by igomez-s         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "pipex_bonus.h"
 
 int	child_head(char **argv, char **envp, int pipefd[2], int infile)
@@ -124,6 +136,107 @@ int pipex_bonus(int argc, char **argv, char **envp, int pipefd[2])
     return (0);
 }
 
+void	here_doc_input(char *limiter, int pipefd[2])
+{
+	char	*line;
+
+	close(pipefd[0]);
+	while (1)
+	{
+		write(1, "heredoc> ", 9);
+		line = get_next_line(STDIN_FILENO);
+		if (!line)
+			break;
+		if (ft_strncmp(line, limiter, ft_strlen(limiter)) == 0 && line[ft_strlen(limiter)] == '\n')
+		{
+			free(line);
+			break;
+		}
+		write(pipefd[1], line, ft_strlen(line));
+		free(line);
+	}
+	close(pipefd[1]);
+	exit(0);
+}
+
+int	pipex_bonus_here(int argc, char **argv, char **envp)
+{
+	int		pipefd[2];
+	int		outfile;
+	int		prev_pipe;
+	int		i;
+	pid_t	pid;
+
+	outfile = open(argv[argc - 1], O_WRONLY | O_CREAT | O_APPEND, 0644);
+	if (outfile < 0)
+		return (1);
+	if (pipe(pipefd) < 0)
+		return (1);
+	pid = fork();
+	if (pid < 0)
+		return (1);
+	if (pid == 0)
+		here_doc_input(argv[2], pipefd);
+	wait(NULL);
+	close(pipefd[1]);
+	prev_pipe = pipefd[0];
+	i = 3;
+	while (i < argc - 2)
+	{
+		if (pipe(pipefd) < 0)
+			return (1);
+		if (child(argv[i], envp, prev_pipe, pipefd[1]) == 1)
+			return (1);
+		close(prev_pipe);
+		close(pipefd[1]);
+		prev_pipe = pipefd[0];
+		i++;
+	}
+	if (child_end(argv[argc - 2], envp, pipefd, outfile) == 1)
+		return (1);
+
+	close(prev_pipe);
+	close(outfile);
+	return (0);
+}
+
+/*
+int pipex_bonus_here(int argc, char **argv, char **envp, int pipefd[2])
+{
+	int outfile;
+    int prev_pipe;
+    int i;
+    
+	outfile = open(argv[argc - 1], O_WRONLY | O_CREAT | O_APPEND, 0644);
+    if (outfile < 0)
+	    return (1);
+    if (pipe(pipefd) < 0)
+			return (1);
+    if (child_head(argv, envp, pipefd, STDIN_FILENO) == 1)
+		return (1);
+    close(pipefd[1]);
+    prev_pipe = pipefd[0];
+    i = 3;
+    while (i < argc - 2)
+    {
+        if (pipe(pipefd) < 0)
+            return (1);
+        if (child(argv[i], envp, prev_pipe, pipefd[1]) == 1)
+            return (1);
+        close(prev_pipe);
+        close(pipefd[1]);
+        prev_pipe = pipefd[0];
+        i++;
+    }
+    if (child_end(argv[argc - 2], envp, pipefd, outfile) == 1)
+		return (1);
+    close(prev_pipe);
+    close(outfile);
+    return (0);
+}
+
+*/
+
 int	main(int argc, char **argv, char **envp)
 {
 	int	pipefd[2];
@@ -143,9 +256,13 @@ int	main(int argc, char **argv, char **envp)
 		if (child_end(argv[argc - 2], envp, pipefd, outfile) == 1)
 			return (1);
 	}
-    else if (argc > 5)
-        if (pipex_bonus(argc, argv, envp, pipefd) == 1)
-            return (1);
+	else if (argc > 5)
+{
+	if (ft_strncmp(argv[1], "here_doc", 8) == 0)
+		return (pipex_bonus_here(argc, argv, envp));
+	else
+		return (pipex_bonus(argc, argv, envp, pipefd));
+}
 	close_files(pipefd, infile, outfile);
 	wait(NULL);
 	wait(NULL);
