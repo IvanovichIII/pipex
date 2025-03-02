@@ -1,20 +1,28 @@
+PING 127.0.0.1 (127.0.0.1) 56(84) bytes of data.
+64 bytes from 127.0.0.1: icmp_seq=1 ttl=64 time=0.020 ms
+64 bytes from 127.0.0.1: icmp_seq=2 ttl=64 time=0.027 ms
+64 bytes from 127.0.0.1: icmp_seq=3 ttl=64 time=0.030 ms
+64 bytes from 127.0.0.1: icmp_seq=4 ttl=64 time=0.028 ms
 
-5
-6
-7
-8
-9
-10
-1
-11
-111
-a
-m
-u
-n
-d
-o
-a
-z
-u
+--- 127.0.0.1 ping statistics ---
+4 packets transmitted, 4 received, 0% packet loss, time 2997ms
+rtt min/avg/max/mdev = 0.020/0.026/0.030/0.003 ms
+hola
+mundo
+comida
+rica
+con
+mucha sal
+y patata
+Esto es otra cosa
+pma
+Hola
+asd
 l
+patat
+asd
+sad
+sdfc
+hhh
+asfd
+as

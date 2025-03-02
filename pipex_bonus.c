@@ -6,7 +6,7 @@
 /*   By: igomez-s <igomez-s@student.42.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 11:11:43 by igomez-s          #+#    #+#             */
-/*   Updated: 2025/01/27 11:12:26 by igomez-s         ###   ########.fr       */
+/*   Updated: 2025/02/27 18:20:55 by igomez-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,41 +99,41 @@ int	child_end(char *argv, char **envp, int pipefd[2], int outfile)
 	return (0);
 }
 
-int pipex_bonus(int argc, char **argv, char **envp, int pipefd[2])
+int	pipex_bonus(int argc, char **argv, char **envp, int pipefd[2])
 {
-    int infile;
-	int outfile;
-    int prev_pipe;
-    int i;
-    
-    infile = open(argv[1], O_RDONLY);
+	int	infile;
+	int	outfile;
+	int	prev_pipe;
+	int	i;
+
+	infile = open(argv[1], O_RDONLY);
 	outfile = open(argv[argc - 1], O_WRONLY | O_CREAT | O_TRUNC, 0644);
-    if (infile < 0 || outfile < 0)
-	    return (1);
-    if (pipe(pipefd) < 0)
+	if (infile < 0 || outfile < 0)
+		return (1);
+	if (pipe(pipefd) < 0)
+		return (1);
+	if (child_head(argv, envp, pipefd, infile) == 1)
+		return (1);
+	close(infile);
+	close(pipefd[1]);
+	prev_pipe = pipefd[0];
+	i = 3;
+	while (i < argc - 2)
+	{
+		if (pipe(pipefd) < 0)
 			return (1);
-    if (child_head(argv, envp, pipefd, infile) == 1)
+		if (child(argv[i], envp, prev_pipe, pipefd[1]) == 1)
+			return (1);
+		close(prev_pipe);
+		close(pipefd[1]);
+		prev_pipe = pipefd[0];
+		i++;
+	}
+	if (child_end(argv[argc - 2], envp, pipefd, outfile) == 1)
 		return (1);
-    close(infile);
-    close(pipefd[1]);
-    prev_pipe = pipefd[0];
-    i = 3;
-    while (i < argc - 2)
-    {
-        if (pipe(pipefd) < 0)
-            return (1);
-        if (child(argv[i], envp, prev_pipe, pipefd[1]) == 1)
-            return (1);
-        close(prev_pipe);
-        close(pipefd[1]);
-        prev_pipe = pipefd[0];
-        i++;
-    }
-    if (child_end(argv[argc - 2], envp, pipefd, outfile) == 1)
-		return (1);
-    close(prev_pipe);
-    close(outfile);
-    return (0);
+	close(prev_pipe);
+	close(outfile);
+	return (0);
 }
 
 void	here_doc_input(char *limiter, int pipefd[2])
@@ -143,14 +143,15 @@ void	here_doc_input(char *limiter, int pipefd[2])
 	close(pipefd[0]);
 	while (1)
 	{
-		write(1, "heredoc> ", 9);
+		write(1, "> ", 2);
 		line = get_next_line(STDIN_FILENO);
 		if (!line)
-			break;
-		if (ft_strncmp(line, limiter, ft_strlen(limiter)) == 0 && line[ft_strlen(limiter)] == '\n')
+			break ;
+		if (ft_strncmp(line, limiter, ft_strlen(limiter)) == 0
+			&& line[ft_strlen(limiter)] == '\n')
 		{
 			free(line);
-			break;
+			break ;
 		}
 		write(pipefd[1], line, ft_strlen(line));
 		free(line);
@@ -194,48 +195,47 @@ int	pipex_bonus_here(int argc, char **argv, char **envp)
 	}
 	if (child_end(argv[argc - 2], envp, pipefd, outfile) == 1)
 		return (1);
-
 	close(prev_pipe);
 	close(outfile);
 	return (0);
 }
 
 /*
-int pipex_bonus_here(int argc, char **argv, char **envp, int pipefd[2])
-{
-	int outfile;
-    int prev_pipe;
-    int i;
-    
-	outfile = open(argv[argc - 1], O_WRONLY | O_CREAT | O_APPEND, 0644);
-    if (outfile < 0)
-	    return (1);
-    if (pipe(pipefd) < 0)
-			return (1);
-    if (child_head(argv, envp, pipefd, STDIN_FILENO) == 1)
-		return (1);
-    close(pipefd[1]);
-    prev_pipe = pipefd[0];
-    i = 3;
-    while (i < argc - 2)
-    {
-        if (pipe(pipefd) < 0)
-            return (1);
-        if (child(argv[i], envp, prev_pipe, pipefd[1]) == 1)
-            return (1);
-        close(prev_pipe);
-        close(pipefd[1]);
-        prev_pipe = pipefd[0];
-        i++;
-    }
-    if (child_end(argv[argc - 2], envp, pipefd, outfile) == 1)
-		return (1);
-    close(prev_pipe);
-    close(outfile);
-    return (0);
-}
+   int pipex_bonus_here(int argc, char **argv, char **envp, int pipefd[2])
+   {
+   int outfile;
+   int prev_pipe;
+   int i;
 
-*/
+   outfile = open(argv[argc - 1], O_WRONLY | O_CREAT | O_APPEND, 0644);
+   if (outfile < 0)
+   return (1);
+   if (pipe(pipefd) < 0)
+   return (1);
+   if (child_head(argv, envp, pipefd, STDIN_FILENO) == 1)
+   return (1);
+   close(pipefd[1]);
+   prev_pipe = pipefd[0];
+   i = 3;
+   while (i < argc - 2)
+   {
+   if (pipe(pipefd) < 0)
+   return (1);
+   if (child(argv[i], envp, prev_pipe, pipefd[1]) == 1)
+   return (1);
+   close(prev_pipe);
+   close(pipefd[1]);
+   prev_pipe = pipefd[0];
+   i++;
+   }
+   if (child_end(argv[argc - 2], envp, pipefd, outfile) == 1)
+   return (1);
+   close(prev_pipe);
+   close(outfile);
+   return (0);
+   }
+
+ */
 
 int	main(int argc, char **argv, char **envp)
 {
@@ -257,12 +257,12 @@ int	main(int argc, char **argv, char **envp)
 			return (1);
 	}
 	else if (argc > 5)
-{
-	if (ft_strncmp(argv[1], "here_doc", 8) == 0)
-		return (pipex_bonus_here(argc, argv, envp));
-	else
-		return (pipex_bonus(argc, argv, envp, pipefd));
-}
+	{
+		if (ft_strncmp(argv[1], "here_doc", 8) == 0)
+			return (pipex_bonus_here(argc, argv, envp));
+		else
+			return (pipex_bonus(argc, argv, envp, pipefd));
+	}
 	close_files(pipefd, infile, outfile);
 	wait(NULL);
 	wait(NULL);

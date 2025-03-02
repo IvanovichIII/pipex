@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/23 20:35:07 by igomez-s          #+#    #+#             */
-/*   Updated: 2025/01/25 12:52:25 by igomez-s         ###   ########.fr       */
+/*   Updated: 2025/02/27 17:24:56 by igomez-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,8 @@ void	close_files(int *pipefd, int infile, int outfile);
 
 //Pipex
 char	*find_path(char *cmd, char **envp);
-int	child1(char **argv, char **envp, int pipefd[2], int infile);
-int	child2(char **argv, char **envp, int pipefd[2], int outfile);
-int	main(int argc, char **argv, char **envp);
+int		child1(char **argv, char **envp, int pipefd[2], int infile);
+int		child2(char **argv, char **envp, int pipefd[2], int outfile);
+int		main(int argc, char **argv, char **envp);
 
 #endif
